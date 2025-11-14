@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Contact – Integrated Flavour Solutions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="logo" href="index.html">
+        <img src="img/logo.png" alt="IFS logo" />
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About / Services</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container content">
+    <h1>Let’s talk flavour</h1>
+    <p>Email us at <a href="mailto:hello@integratedflavour.com">hello@integratedflavour.com</a> or use the form below.</p>
+
+    <form action="https://formspree.io/f/your-form-id" method="POST">
+      <label>
+        Name
+        <input type="text" name="name" required />
+      </label>
+      <label>
+        Email
+        <input type="email" name="_replyto" required />
+      </label>
+      <label>
+        Message
+        <textarea name="message" rows="5" required></textarea>
+      </label>
+      <button type="submit">Send</button>
+    </form>
+  </main>
+
+  <footer>
+    <div class="container">
+      <small>&copy; <span id="year"></span> Integrated Flavour Solutions</small>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
