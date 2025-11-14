@@ -4,9 +4,14 @@
   <meta charset="utf-8" />
   <title>Integrated Flavour Solutions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/styles.css" />
   <style>
-    /* ---- animated light-rays background ---- */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
     #rays-canvas {
       position: fixed;
       inset: 0;
@@ -16,27 +21,30 @@
       z-index: 0;
     }
     body {
-      background-color: rgba(0, 0, 0, 0.8); /* Dark background to make lights more visible */
+      background: linear-gradient(to bottom, #003366, #ffffff); /* Blue to white gradient */
     }
     main {
       position: relative;
       z-index: 2;
-      background: rgba(255, 255, 255, 0.9); /* More transparent background */
+      background: rgba(255, 255, 255, 0.8); /* Translucent white background */
       margin: 2rem auto;
       max-width: 900px;
       border-radius: 8px;
       padding: 3rem 2.5rem;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      color: #333; /* Dark text for contrast */
     }
     header {
       background: rgba(0, 0, 0, 0.5); /* Transparent header */
       backdrop-filter: blur(10px);
-    }
-    .container.nav {
+      position: fixed;
+      width: 100%;
+      top: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem;
+      z-index: 1;
     }
     .logo img {
       height: 40px;
@@ -68,19 +76,12 @@
     </div>
   </header>
 
-  <main class="container content">
+  <main class="container content" style="margin-top: 60px;">
     <h1>Welcome to Integrated Flavour Solutions</h1>
     <p>Crafting taste experiences that leave a lasting impression.</p>
   </main>
 
-  <footer>
-    <div class="container">
-      <small>&copy; <span id="year"></span> Integrated Flavour Solutions</small>
-    </div>
-  </footer>
-
   <script>
-    /* ---- inline WebGL light-rays (plain JS) ---- */
     const vert = `attribute vec2 position;
                   varying vec2 vUv;
                   void main(){vUv=position*0.5+0.5;gl_Position=vec4(position,0.,1.);}`;
@@ -97,7 +98,7 @@
                   }
                   void main(){
                     vec2 p=gl_FragCoord.xy;
-                    vec2 src=vec2(iResolution.x*0.5,-iResolution.y*0.15);
+                    vec2 src=vec2(iResolution.x*0.5,-iResolution.y*0.15); // Light source at top center
                     vec2 dir=vec2(0.,1.);
                     float r=ray(src,dir,p);
                     vec3 col=vec3(0.05,0.25,0.9)*r;          // IBM-blue-ish
@@ -148,10 +149,6 @@
       requestAnimationFrame(draw);
     }
     draw();
-  </script>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
