@@ -4,9 +4,14 @@
   <meta charset="utf-8" />
   <title>Integrated Flavour Solutions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/styles.css" />
   <style>
-    /* ---- GradientBlinds background ---- */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
     #blinds-canvas {
       position: fixed;
       inset: 0;
@@ -14,54 +19,44 @@
       height: 100%;
       pointer-events: none;
       z-index: 0;
-      mix-blend-mode: lighten;
     }
     body {
-      /* soft blue → white gradient behind the blinds */
-      background: linear-gradient(180deg, #eef2ff 0%, #ffffff 100%);
-    }
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.55);
-      backdrop-filter: blur(8px);
-      z-index: 10;
-    }
-    .container.nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-    }
-    nav a {
-      color: #0f62fe;
-      font-weight: 600;
-      margin-left: 1.5rem;
-      text-decoration: none;
-    }
-    nav a:hover {
-      text-decoration: underline;
+      background: linear-gradient(to bottom, #003366, #ffffff); /* Blue to white gradient */
     }
     main {
       position: relative;
       z-index: 2;
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: 12px;
-      margin: 8rem auto 4rem;
-      max-width: 800px;
+      background: rgba(255, 255, 255, 0.8); /* Translucent white background */
+      margin: 2rem auto;
+      max-width: 900px;
+      border-radius: 8px;
       padding: 3rem 2.5rem;
-      box-shadow: 0 8px 32px rgba(82, 39, 255, 0.12);
-      color: #161616;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      color: #333; /* Dark text for contrast */
     }
-    footer {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 2rem 0;
-      font-size: 0.875rem;
+    header {
+      background: rgba(0, 0, 0, 0.5); /* Transparent header */
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      z-index: 1;
+    }
+    .logo img {
+      height: 40px;
+    }
+    nav a {
+      color: white;
+      margin-left: 1.5rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    nav a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -81,152 +76,41 @@
     </div>
   </header>
 
-  <main class="container content">
+  <main class="container content" style="margin-top: 60px;">
     <h1>Welcome to Integrated Flavour Solutions</h1>
     <p>Crafting taste experiences that leave a lasting impression.</p>
   </main>
 
-  <footer>
-    <div class="container">
-      <small>&copy; <span id="year"></span> Integrated Flavour Solutions</small>
-    </div>
-  </footer>
-
   <script>
-    /* ---- inline GradientBlinds (plain JS) ---- */
-    const vert = `attribute vec2 position;
-                  attribute vec2 uv;
-                  varying vec2 vUv;
-                  void main(){vUv=uv;gl_Position=vec4(position,0.,1.);}`;
-
-    const frag = `precision mediump float;
-                  uniform vec3  iResolution;
-                  uniform vec2  iMouse;
-                  uniform float iTime;
-                  uniform float uAngle;
-                  uniform float uNoise;
-                  uniform float uBlindCount;
-                  uniform float uSpotlightRadius;
-                  uniform float uSpotlightSoftness;
-                  uniform float uSpotlightOpacity;
-                  uniform float uMirror;
-                  uniform float uDistort;
-                  uniform float uShineFlip;
-                  uniform vec3  uColor0;
-                  uniform vec3  uColor1;
-                  uniform vec3  uColor2;
-                  uniform vec3  uColor3;
-                  uniform vec3  uColor4;
-                  uniform vec3  uColor5;
-                  uniform vec3  uColor6;
-                  uniform vec3  uColor7;
-                  uniform int   uColorCount;
-
-                  varying vec2 vUv;
-
-                  float rand(vec2 co){return fract(sin(dot(co,vec2(12.9898,78.233)))*43758.5453);}
-
-                  vec2 rotate2D(vec2 p,float a){
-                    float c=cos(a),s=sin(a);
-                    return mat2(c,-s,s,c)*p;
-                  }
-                  vec3 getGradientColor(float t){
-                    float tt=clamp(t,0.,1.)*float(uColorCount-1);
-                    int seg=int(floor(tt));
-                    float f=fract(tt);
-                    if(seg<1)return mix(uColor0,uColor1,f);
-                    if(seg<2&&uColorCount>2)return mix(uColor1,uColor2,f);
-                    if(seg<3&&uColorCount>3)return mix(uColor2,uColor3,f);
-                    if(seg<4&&uColorCount>4)return mix(uColor3,uColor4,f);
-                    if(seg<5&&uColorCount>5)return mix(uColor4,uColor5,f);
-                    if(seg<6&&uColorCount>6)return mix(uColor5,uColor6,f);
-                    if(seg<7&&uColorCount>7)return mix(uColor6,uColor7,f);
-                    return uColor7;
-                  }
-                  void main(){
-                    vec2 uv0=gl_FragCoord.xy/iResolution.xy;
-                    float aspect=iResolution.x/iResolution.y;
-                    vec2 p=uv0*2.-1.;p.x*=aspect;
-                    p=rotate2D(p,uAngle);
-                    p.x/=aspect;
-                    vec2 uv=p*0.5+0.5;
-
-                    vec2 uvMod=uv;
-                    if(uDistort>0.){
-                      float a=uvMod.y*6.,b=uvMod.x*6.,w=0.01*uDistort;
-                      uvMod.x+=sin(a)*w;uvMod.y+=cos(b)*w;
-                    }
-                    float t=uvMod.x;
-                    if(uMirror>0.5)t=1.-abs(1.-2.*fract(t));
-                    vec3 base=getGradientColor(t);
-
-                    vec2 offset=iMouse.xy/iResolution.xy;
-                    float d=length(uv0-offset);
-                    float r=max(uSpotlightRadius,1e-4),dn=d/r;
-                    float spot=(1.-2.*pow(dn,uSpotlightSoftness))*uSpotlightOpacity;
-                    vec3 cir=vec3(spot);
-                    float stripe=fract(uvMod.x*max(uBlindCount,1.));
-                    if(uShineFlip>0.5)stripe=1.-stripe;
-                    vec3 ran=vec3(stripe);
-
-                    vec3 col=cir+base-ran;
-                    col+=(rand(gl_FragCoord.xy+iTime)-0.5)*uNoise;
-                    gl_FragColor=vec4(col,1.);
-                  }`;
-
-    const canvas = document.createElement('canvas');
-    canvas.id = 'blinds-canvas';
-    document.body.appendChild(canvas);
-
+    const canvas = document.getElementById('blinds-canvas');
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     if (!gl) { canvas.style.display = 'none'; }
 
-    const renderer = {
-      dpr: Math.min(window.devicePixelRatio || 1, 2),
-      setSize(w, h){
-        canvas.width = w * this.dpr;
-        canvas.height = h * this.dpr;
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
-        gl.viewport(0, 0, canvas.width, canvas.height);
-      }
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    function resize(){
-      const rect = canvas.parentElement.getBoundingClientRect();
-      renderer.setSize(rect.width, rect.height);
-      if (uniforms.iResolution) {
-        uniforms.iResolution.value = [canvas.width, canvas.height, 1];
-      }
-    }
-    window.addEventListener('resize', resize);
+    const vert = `attribute vec2 position;
+                  varying vec2 vUv;
+                  void main() {
+                      vUv = position;
+                      gl_Position = vec4(position, 0.0, 1.0);
+                  }`;
 
-    // uniforms
-    const uniforms = {
-      iResolution: { value: [1, 1, 1] },
-      iMouse: { value: [0, 0] },
-      iTime: { value: 0 },
-      uAngle: { value: 0 },
-      uNoise: { value: 0.3 },
-      uBlindCount: { value: 12 },
-      uSpotlightRadius: { value: 0.5 },
-      uSpotlightSoftness: { value: 1 },
-      uSpotlightOpacity: { value: 1 },
-      uMirror: { value: 0 },
-      uDistort: { value: 0 },
-      uShineFlip: { value: 0 },
-      uColor0: { value: [1, .62, .99] },  // #FF9FFC
-      uColor1: { value: [.32, .15, 1] },  // #5227FF
-      uColor2: { value: [.32, .15, 1] },
-      uColor3: { value: [.32, .15, 1] },
-      uColor4: { value: [.32, .15, 1] },
-      uColor5: { value: [.32, .15, 1] },
-      uColor6: { value: [.32, .15, 1] },
-      uColor7: { value: [.32, .15, 1] },
-      uColorCount: { value: 2 }
-    };
+    const frag = `precision highp float;
+                  uniform float iTime;
+                  uniform vec2 iResolution;
+                  varying vec2 vUv;
+                  void main() {
+                      vec2 uv = vUv;
+                      vec3 col = vec3(0.0);
+                      col = vec3(sin(uv.y * 10.0 + iTime) * 0.5 + 0.5, sin(uv.x * 10.0 + iTime) * 0.5 + 0.5, 1.0);
+                      gl_FragColor = vec4(col, 1.0);
+                  }`;
 
-    // program & mesh
     const prog = gl.createProgram();
     const vShader = gl.createShader(gl.VERTEX_SHADER);
     const fShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -239,7 +123,6 @@
     gl.linkProgram(prog);
     gl.useProgram(prog);
 
-    // triangle that fills screen
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
@@ -247,63 +130,24 @@
     gl.enableVertexAttribArray(posLoc);
     gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-    // locate uniforms
-    const getLoc = n => gl.getUniformLocation(prog, n);
-    Object.keys(uniforms).forEach(k => uniforms[k].loc = getLoc(k));
+    const timeLoc = gl.getUniformLocation(prog, 'iTime');
+    const resLoc = gl.getUniformLocation(prog, 'iResolution');
 
-    // helper to upload uniforms
-    function uploadUniforms(){
-      gl.uniform3fv(uniforms.iResolution.loc, uniforms.iResolution.value);
-      gl.uniform2fv(uniforms.iMouse.loc, uniforms.iMouse.value);
-      gl.uniform1f(uniforms.iTime.loc, uniforms.iTime.value);
-      gl.uniform1f(uniforms.uAngle.loc, uniforms.uAngle.value);
-      gl.uniform1f(uniforms.uNoise.loc, uniforms.uNoise.value);
-      gl.uniform1f(uniforms.uBlindCount.loc, uniforms.uBlindCount.value);
-      gl.uniform1f(uniforms.uSpotlightRadius.loc, uniforms.uSpotlightRadius.value);
-      gl.uniform1f(uniforms.uSpotlightSoftness.loc, uniforms.uSpotlightSoftness.value);
-      gl.uniform1f(uniforms.uSpotlightOpacity.loc, uniforms.uSpotlightOpacity.value);
-      gl.uniform1f(uniforms.uMirror.loc, uniforms.uMirror.value);
-      gl.uniform1f(uniforms.uDistort.loc, uniforms.uDistort.value);
-      gl.uniform1f(uniforms.uShineFlip.loc, uniforms.uShineFlip.value);
-      gl.uniform3fv(uniforms.uColor0.loc, uniforms.uColor0.value);
-      gl.uniform3fv(uniforms.uColor1.loc, uniforms.uColor1.value);
-      gl.uniform3fv(uniforms.uColor2.loc, uniforms.uColor2.value);
-      gl.uniform3fv(uniforms.uColor3.loc, uniforms.uColor3.value);
-      gl.uniform3fv(uniforms.uColor4.loc, uniforms.uColor4.value);
-      gl.uniform3fv(uniforms.uColor5.loc, uniforms.uColor5.value);
-      gl.uniform3fv(uniforms.uColor6.loc, uniforms.uColor6.value);
-      gl.uniform3fv(uniforms.uColor7.loc, uniforms.uColor7.value);
-      gl.uniform1i(uniforms.uColorCount.loc, uniforms.uColorCount.value);
-    }
-
-    // mouse smoothing
-    let mouseTarget = [canvas.width / 2, canvas.height / 2];
-    let mouseSmooth = [canvas.width / 2, canvas.height / 2];
-    canvas.addEventListener('pointermove', e => {
-      const rect = canvas.getBoundingClientRect();
-      mouseTarget = [(e.clientX - rect.left) * renderer.dpr, (rect.height - (e.clientY - rect.top)) * renderer.dpr];
-    });
-
-    // render loop
     let start = performance.now();
-    function draw(t){
-      uniforms.iTime.value = (t - start) * 0.001;
-
-      // smooth mouse
-      const tau = 0.15;
-      const dt = 0.016;
-      const f = 1 - Math.exp(-dt / tau);
-      mouseSmooth[0] += (mouseTarget[0] - mouseSmooth[0]) * f;
-      mouseSmooth[1] += (mouseTarget[1] - mouseSmooth[1]) * f;
-      uniforms.iMouse.value = mouseSmooth;
-
-      uploadUniforms();
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      requestAnimationFrame(draw);
+    function draw() {
+        gl.uniform2f(resLoc, canvas.width, canvas.height);
+        gl.uniform1f(timeLoc, (performance.now() - start) * 0.001);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        requestAnimationFrame(draw);
     }
-    resize();
     draw();
   </script>
+
+  <footer>
+    <div class="container">
+      <small>&copy; <span id="year"></span> Integrated Flavour Solutions</small>
+    </div>
+  </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
