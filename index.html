@@ -3,54 +3,45 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Integrated Flavour Solutions</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Integrated Flavour Solutions | Home</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="page-wrapper">
-    <!-- Canvas for iridescence shader -->
     <div id="iridescence-root" class="iridescence-container" aria-hidden="true"></div>
 
-    <!-- content overlay -->
     <header class="site-header">
       <div class="brand">
-        <!-- Replace src with your logo when ready -->
-        <img id="logo" src="logo-placeholder.png" alt="Integrated Flavour Solutions logo" />
+        <img id="logo" src="img/logo.png" alt="Integrated Flavour Solutions logo" />
         <span class="company-name">Integrated Flavour Solutions</span>
       </div>
-
       <nav class="main-nav">
-        <a href="#" class="nav-link active">Home</a>
-        <a href="#" class="nav-link">About / Services</a>
-        <a href="#" class="nav-link">Contact</a>
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="about.html" class="nav-link">About / Services</a>
+        <a href="contact.html" class="nav-link">Contact</a>
       </nav>
     </header>
 
     <main class="hero">
       <div class="hero-inner">
-        <div class="badge">New Background</div>
-        <h1 class="hero-title">Radiant iridescence with customizable colors</h1>
-        <p class="hero-sub">Beautiful, animated backgrounds for marketing pages and product hero sections.</p>
-
+        <span class="badge">New Background</span>
+        <h1 class="hero-title">Crafting taste experiences that leave a lasting impression</h1>
+        <p class="hero-sub">
+          Integrated Flavour Solutions helps food & beverage brands develop signature flavour profiles,
+          optimise recipes and bring products to market faster.
+        </p>
         <div class="hero-ctas">
-          <a class="btn primary" href="#">Get Started</a>
-          <a class="btn ghost" href="#">Learn More</a>
+          <a class="btn primary" href="about.html">Discover Services</a>
+          <a class="btn ghost" href="contact.html">Get in Touch</a>
         </div>
-      </div>
-
-      <div class="demo-toggle">
-        <label>
-          <span>Demo Content</span>
-          <input id="demoToggle" type="checkbox" />
-        </label>
       </div>
     </main>
 
     <footer class="site-footer">
-      <small>© <span id="year"></span> Integrated Flavour Solutions — All rights reserved</small>
+      <small>© <span id="year"></span> Integrated Flavour Solutions – All rights reserved</small>
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

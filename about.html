@@ -2,142 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>About – Integrated Flavour Solutions</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    #rays-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-    main {
-      position: relative;
-      z-index: 2;
-      background: rgba(255,255,255,.92);
-      margin: 2rem auto;
-      max-width: 900px;
-      border-radius: 8px;
-      padding: 3rem 2.5rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
-    }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About / Services | Integrated Flavour Solutions</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <canvas id="rays-canvas"></canvas>
+  <div class="page-wrapper">
+    <div id="iridescence-root" class="iridescence-container" aria-hidden="true"></div>
 
-  <header>
-    <div class="container nav">
-      <a class="logo" href="index.html">
-        <img src="img/logo.png" alt="IFS logo" />
-      </a>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About / Services</a>
-        <a href="contact.html">Contact</a>
+    <header class="site-header">
+      <div class="brand">
+        <img id="logo" src="img/logo.png" alt="Integrated Flavour Solutions logo" />
+        <span class="company-name">Integrated Flavour Solutions</span>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link active">About / Services</a>
+        <a href="contact.html" class="nav-link">Contact</a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="container content">
-    <h1>About Us</h1>
-    <p>
-      Integrated Flavour Solutions is a boutique consultancy that helps food &
-      beverage brands develop signature flavour profiles, optimise recipes,
-      and bring products to market faster.
-    </p>
+    <main class="hero">
+      <div class="hero-inner">
+        <span class="badge">Our Services</span>
+        <h1 class="hero-title">Boutique flavour consultancy from concept to shelf</h1>
+        <p class="hero-sub">
+          We partner with start-ups and global brands to create unforgettable taste experiences
+          backed by consumer insight, regulatory expertise and fast-turnaround pilot production.
+        </p>
 
-    <h2>Core Services</h2>
-    <ul>
-      <li>Consumer insight & trend scouting</li>
-      <li>Recipe & formulation development</li>
-      <li>Sensory evaluation & shelf-life testing</li>
-      <li>Regulatory & label compliance review</li>
-    </ul>
-  </main>
+        <ul style="text-align:left;max-width:600px;margin:2rem auto 2.5rem;font-size:1.05rem;line-height:1.6;">
+          <li>Consumer insight & trend scouting</li>
+          <li>Recipe & formulation development</li>
+          <li>Sensory evaluation & shelf-life testing</li>
+          <li>Regulatory & label compliance review</li>
+          <li>Scale-up and pilot plant trials</li>
+          <li>Market launch support & post-launch optimisation</li>
+        </ul>
 
-  <footer>
-    <div class="container">
-      <small>&copy; <span id="year"></span> Integrated Flavour Solutions</small>
-    </div>
-  </footer>
+        <div class="hero-ctas">
+          <a class="btn primary" href="contact.html">Start a Project</a>
+          <a class="btn ghost" href="index.html">Back to Home</a>
+        </div>
+      </div>
+    </main>
 
-  <!-- same inline WebGL script as index.html -->
-  <script>
-    const vert = `attribute vec2 position;
-                  varying vec2 vUv;
-                  void main(){vUv=position*0.5+0.5;gl_Position=vec4(position,0.,1.);}`;
+    <footer class="site-footer">
+      <small>© <span id="year"></span> Integrated Flavour Solutions – All rights reserved</small>
+    </footer>
+  </div>
 
-    const frag = `precision highp float;
-                  uniform float iTime;
-                  uniform vec2 iResolution;
-                  varying vec2 vUv;
-                  float noise(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
-                  float ray(vec2 src,vec2 dir,vec2 p){
-                    vec2 d=p-src;float c=dot(normalize(d),dir);
-                    float len=length(d);float maxL=iResolution.x*1.2;
-                    return pow(max(c,0.),2.)*smoothstep(maxL,0.,len)*(0.6+0.4*sin(iTime*2.5+len*0.02));
-                  }
-                  void main(){
-                    vec2 p=gl_FragCoord.xy;
-                    vec2 src=vec2(iResolution.x*0.5,-iResolution.y*0.15);
-                    vec2 dir=vec2(0.,1.);
-                    float r=ray(src,dir,p);
-                    vec3 col=vec3(0.05,0.25,0.9)*r;
-                    col+=vec3(0.1,0.4,1.)*ray(src,dir*0.95,p)*0.5;
-                    gl_FragColor=vec4(col,1.);
-                  }`;
-
-    const canvas = document.getElementById('rays-canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) { canvas.style.display = 'none'; }
-
-    function resize(){
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width  = window.innerWidth  * dpr;
-      canvas.height = window.innerHeight * dpr;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    const prog = gl.createProgram();
-    const vShader = gl.createShader(gl.VERTEX_SHADER);
-    const fShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(vShader, vert);
-    gl.shaderSource(fShader, frag);
-    gl.compileShader(vShader);
-    gl.compileShader(fShader);
-    gl.attachShader(prog, vShader);
-    gl.attachShader(prog, fShader);
-    gl.linkProgram(prog);
-    gl.useProgram(prog);
-
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-    const posLoc = gl.getAttribLocation(prog, 'position');
-    gl.enableVertexAttribArray(posLoc);
-    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-    const resLoc  = gl.getUniformLocation(prog, 'iResolution');
-    const timeLoc = gl.getUniformLocation(prog, 'iTime');
-
-    let start = performance.now();
-    function draw(){
-      gl.uniform2f(resLoc, canvas.width, canvas.height);
-      gl.uniform1f(timeLoc, (performance.now() - start)*0.001);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      requestAnimationFrame(draw);
-    }
-    draw();
-  </script>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script src="js/script.js"></script>
 </body>
 </html>
