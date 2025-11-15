@@ -1,9 +1,11 @@
-/* script.js  –  your iridescence shader (unchanged) */
+/* script.js  –  iridescence with custom IBM-blue-ish tint */
 (() => {
-  const COLOR = [1.0, 1.0, 1.0];
+  // ---------- CONFIG ----------
+  const COLOR = [0.0, 0.4, 0.8]; // ← new tint  (R, G, B) 0-1
   const AMPLITUDE = 0.1;
   const SPEED = 1.0;
   const MOUSE_REACT = true;
+  // ----------------------------
 
   const container = document.getElementById('iridescence-root');
   container.style.background = '#cfd8e3';
@@ -35,10 +37,12 @@
     uniform float uAmplitude;
     uniform float uSpeed;
     varying vec2 vUv;
+
     void main() {
       float mr = min(uResolution.x, uResolution.y);
       vec2 uv = (vUv.xy * 2.0 - 1.0) * uResolution.xy / mr;
       uv += (uMouse - vec2(0.5, 0.5)) * uAmplitude;
+
       float d = -uTime * 0.5 * uSpeed;
       float a = 0.0;
       for (float i = 0.0; i < 8.0; i += 1.0) {
@@ -54,8 +58,7 @@
 
   function compileShader(src, type) {
     const s = gl.createShader(type);
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
+    gl.shaderSource(s, src); gl.compileShader(s);
     if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
       console.error('Shader compile error:', gl.getShaderInfoLog(s));
       gl.deleteShader(s); return null;
